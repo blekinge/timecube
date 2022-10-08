@@ -1,0 +1,156 @@
+openapi: 3.0.2
+info:
+  version: 'v1'
+  title: '${project.name}'
+  description: |
+    ${project.description}
+  contact:
+    email: '${user.name}@kb.dk'
+  license:
+    name: '${license.name}'
+    url: '${license.url}'
+servers:
+  #  /api must match servlet-mapping in web.xml
+  - url: '/${project.artifactId}/v1'
+    description: 'Version 1'
+
+
+#TODO support versioned pages
+#TODO support image posts
+paths:
+
+
+  /side/{id}:
+    get:
+      tags:
+        - '${project.name}'
+      summary: 'gets RenderedVersionOfPage'
+      operationId: getArticle
+      x-streamingOutput: false
+      parameters:
+        - name: id
+          in: path
+          description: 'The ID of the article to process'
+          required: true
+          schema:
+            type: string
+            # Note: Constraints are not enforced by Swagger. They are only used as a contract
+            minLength: 1
+            example: 'article-123A-v2'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            text/html:
+              schema:
+                type: string
+            text/markdown:
+              schema:
+                type: string
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+        '404':
+          description: 'Article ID is unknown'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - '${project.name}'
+      operationId: "upsertArticle"
+      x-useGenericResponse: true # If enabled the method will return Response
+      parameters:
+        - name: id
+          in: path
+          description: 'The ID of the article to process'
+          required: true
+          schema:
+            type: string
+            # Note: Constraints are not enforced by Swagger. They are only used as a contract
+            minLength: 1
+            example: 'article-123A-v2'
+        - name: tripCode
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 'The article contents'
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '201':
+          description: 'Article created'
+          content:
+            text/html:
+              schema:
+                type: string
+        '204':
+          description: 'Article updated'
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: 'If the article was protected by a tripcode and you did not provide it'
+
+    delete:
+      tags:
+        - '${project.name}'
+      operationId: "deleteArticle"
+      parameters:
+        - name: id
+          in: path
+          description: 'The ID of the article to process'
+          required: true
+          schema:
+            type: string
+            # Note: Constraints are not enforced by Swagger. They are only used as a contract
+            minLength: 1
+            example: 'article-123A-v2'
+        - name: tripCode
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Article deleted'
+        '401':
+          description: 'If the article was protected by a tripcode and you did not provide it'
+
+
+components:
+  schemas:
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    Article:
+      type: object
+      properties:
+        id:
+          type: string
+        contents:
+          type: string
+        created:
+          type: string
+          format: 'date-time'
+        author:
+          type: string
+          nullable: true
