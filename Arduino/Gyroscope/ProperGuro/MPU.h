@@ -5,8 +5,6 @@
 Adafruit_MPU6050 mpu;
 
 void setupMPU() {
-
-
   // Try to initialize!
   if (!mpu.begin()) {
     Serial.println("Failed to find MPU6050 chip");
@@ -84,9 +82,6 @@ const float G2 = 8;
 
 
 byte getReading() {
-   delay(500);
-
-
   /* Get new sensor events with the readings */
   //https://adafruit.github.io/Adafruit_CircuitPlayground/html/structsensors__event__t.html
   sensors_event_t a, g, temp;
@@ -118,13 +113,13 @@ byte getReading() {
 
 
 byte getSideUp(byte currentSideUp) {
-  delay(3000);
-  Serial.print("Attempting to getSideUp from current side =");
-  Serial.println(currentSideUp);
+//  Serial.print("Attempting to getSideUp from current side =");
+//  Serial.println(currentSideUp);
   byte sideUp1 = getReading();
   if (currentSideUp == sideUp1) {
     return sideUp1;
   } else {
+    delay(500);
     return getSideUp(sideUp1);
   }
 }

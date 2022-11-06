@@ -3,35 +3,8 @@
 #include <WiFi.h>
 #include <WiFiMulti.h>
 
-#include <HTTPClient.h>
-
-
-
 WiFiMulti wifiMulti;
 
-
-
-struct header_t {
-  const String name;
-  const String value;
-};
-
-
-struct endpoint_t {
-  const char* httpMethod;
-  String url;
-  String body;
-  header_t headers[4];
-  uint8_t count;
-  String username;
-  String password;
-  String authMethod;
-};
-
-
-
-
-//void setupWifi(const char* ssid, const char* password)
 void setupWifi(const char* ssid, const char* password)
 {
 
@@ -69,27 +42,5 @@ void setupWifi(const char* ssid, const char* password)
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
   }
-
-}
-
-
-String getRequest(endpoint_t endpoint)
-{
-
-  //https://github.com/espressif/arduino-esp32/blob/master/libraries/HTTPClient/src/HTTPClient.h
-  HTTPClient http;
-
-  // configure traged server and url
-  //http.begin("https://www.howsmyssl.com/a/check", ca); //HTTPS
-  http.begin(endpoint.url); //HTTP
-
-  // start connection and send HTTP header
-  int httpCode = http.sendRequest(endpoint.httpMethod,endpoint.body);
-
-  String result = http.getString();
-
-  http.end();
-
-  return result;
 
 }

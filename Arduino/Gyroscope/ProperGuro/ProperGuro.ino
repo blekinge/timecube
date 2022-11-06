@@ -1,116 +1,22 @@
-
-
 #include <Arduino.h>
 
-//TODO this should NOT be hardcoded here
-const char* ssid     = "Askov";
-const char* password = ";BK46987";
-#include "MyWifi.h"
-
-
-const char * GET = "GET";
-const char * POST = "POST";
-
-
-endpoint_t urls[] = {
-  //side1
-  { GET,
-    "http://192.168.2.136:8080/diceServer/v1/side/1",
-    "", //body
-    {}, //headers
-    0, //headers count
-    "username", //httpBasic username
-    "password", //httpBasic password
-    "BASIC" //authMethod
-  },
-
-    //side2
-  { GET,
-    "http://192.168.2.136:8080/diceServer/v1/side/2",
-    "", //body
-    {}, //headers
-    0, //headers count
-    "username", //httpBasic username
-    "password", //httpBasic password
-    "BASIC" //authMethod
-  },
-
-    //side3
-  { GET,
-    "http://192.168.2.136:8080/diceServer/v1/side/3",
-    "", //body
-    {}, //headers
-    0, //headers count
-    "username", //httpBasic username
-    "password", //httpBasic password
-    "BASIC" //authMethod
-  },
-
-    //side4
-  { GET,
-    "http://192.168.2.136:8080/diceServer/v1/side/4",
-    "", //body
-    {}, //headers
-    0, //headers count
-    "username", //httpBasic username
-    "password", //httpBasic password
-    "BASIC" //authMethod
-  },
-
-    //side5
-  { GET,
-    "http://192.168.2.136:8080/diceServer/v1/side/5",
-    "", //body
-    {}, //headers
-    0, //headers count
-    "username", //httpBasic username
-    "password", //httpBasic password
-    "BASIC" //authMethod
-  },
-
-    //side6
-  { GET,
-    "http://192.168.2.136:8080/diceServer/v1/side/6",
-    "", //body
-    {}, //headers
-    0, //headers count
-    "username", //httpBasic username
-    "password", //httpBasic password
-    "BASIC" //authMethod
-  }
-
-};
-
+#include "BatteryController.h"
 #include "MPU.h"
-
-
-/**
-   Thoughts:
-
-   1. Get reading of side up
-   2. Verify this 3 secs later
-   3. Check if this is a new side up
-   4. If new side, issue event
-
-
-   TODOs
-
- * * event is HTTP call
- * * deep sleep and interrupts
- * *
-*/
+#include "WifiCreds.h"
+#include "MyWifi.h"
+#include "Http.h"
 
 void setup(void) {
-  
+
   Serial.begin(9600);
 
   while (!Serial) {
     delay(10); // will pause Zero, Leonardo, etc until serial console opens
   }
 
+  setupBattery();
 
-  Serial.println("Adafruit MPU6050 test!");
-
+  Serial.println("Battery setup; starting MPU");
 
   setupMPU();
 
@@ -120,8 +26,8 @@ void setup(void) {
 
   Serial.println("Wifi setup");
   delay(100);
+  
 }
-
 
 byte sideup = 0;
 
@@ -140,8 +46,9 @@ void loop() {
 }
 
 void sideChanged(byte sideUp) {
+  String httpResult = httpGetRequest(sideUp);
   Serial.print(sideUp);
   Serial.println(" is now up");
-  Serial.println(getRequest(urls[sideUp-1]));
+  Serial.println(httpResult);
 
 }
