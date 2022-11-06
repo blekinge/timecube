@@ -1,0 +1,35 @@
+Additional boards:
+https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+Board installed: https://github.com/espressif/arduino-esp32
+
+Using library ESP32TimerInterrupt at version 2.2.0 in folder: /home/abr/Arduino/libraries/ESP32TimerInterrupt https://github.com/khoih-prog/ESP32TimerInterrupt
+Using library Adafruit_MPU6050 at version 2.2.4 in folder: /home/abr/Arduino/libraries/Adafruit_MPU6050 https://github.com/adafruit/Adafruit_MPU6050
+Using library Adafruit_BusIO at version 1.14.1 in folder: /home/abr/Arduino/libraries/Adafruit_BusIO https://github.com/adafruit/Adafruit_BusIO
+Using library Adafruit_Unified_Sensor at version 1.1.6 in folder: /home/abr/Arduino/libraries/Adafruit_Unified_Sensor https://github.com/adafruit/Adafruit_Sensor
+
+Using library Wire at version 2.0.0 in folder: /home/abr/.arduino15/packages/esp32/hardware/esp32/2.0.5/libraries/Wire
+Using library SPI at version 2.0.0 in folder: /home/abr/.arduino15/packages/esp32/hardware/esp32/2.0.5/libraries/SPI
+Using library WiFi at version 2.0.0 in folder: /home/abr/.arduino15/packages/esp32/hardware/esp32/2.0.5/libraries/WiFi
+Using library HTTPClient at version 2.0.0 in folder: /home/abr/.arduino15/packages/esp32/hardware/esp32/2.0.5/libraries/HTTPClient
+Using library WiFiClientSecure at version 2.0.0 in folder: /home/abr/.arduino15/packages/esp32/hardware/esp32/2.0.5/libraries/WiFiClientSecure
+
+
+Upload with settings:
+```bash
+python3 \
+    /home/abr/.arduino15/packages/esp32/tools/esptool_py/4.2.1/esptool.py \
+    --chip esp32 \
+    --port /dev/ttyUSB0 \
+    --baud 921600 \
+    --before default_reset \
+    --after hard_reset write_flash \
+    -z \
+    --flash_mode dio \
+    --flash_freq 80m \
+    --flash_size 4MB \
+    0x1000 /tmp/arduino_build_300769/ProperGuro.ino.bootloader.bin \
+    0x8000 /tmp/arduino_build_300769/ProperGuro.ino.partitions.bin \
+    0xe000 /home/abr/.arduino15/packages/esp32/hardware/esp32/2.0.5/tools/partitions/boot_app0.bin \
+    0x10000 /tmp/arduino_build_300769/ProperGuro.ino.bin
+```
