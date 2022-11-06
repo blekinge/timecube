@@ -1,1 +1,5 @@
-**/WifiCreds.h
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
